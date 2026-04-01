@@ -121,8 +121,10 @@ const version = dev ? getDevVersion(pkg.version) : pkg.version
 
 try {
   mkdirSync(dirname(outfile), { recursive: true })
-} catch {
-  // Ignore EEXIST - directory already exists
+} catch (e: unknown) {
+  if ((e as NodeJS.ErrnoException).code !== 'EEXIST') {
+    throw e
+  }
 }
 
 const externals = [
